@@ -7,7 +7,12 @@ module.exports = function (app) {
   const mongooseClient = app.get('mongooseClient');
   const { Schema } = mongooseClient;
   const schema = new Schema({
-    text: { type: String, required: true }
+    title: { type: String, required: true },
+    description: { type: String, default: '' },
+    order: { type: Number, default: 0 },
+    archived: { type: Boolean, default: false },
+    listId: { type: Schema.Types.ObjectId, ref: 'lists' },
+    members: [{ type: Schema.Types.ObjectId, ref: 'users' }],
   }, {
     timestamps: true
   });

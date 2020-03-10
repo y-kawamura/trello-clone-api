@@ -10,7 +10,7 @@ module.exports = function (app) {
     name: { type: String, required: true },
     background: { type: String, required: true },
     ownerId: { type: Schema.Types.ObjectId, ref: 'users' },
-    memberId: [{ type: Schema.Types.ObjectId, ref: 'users' }],
+    members: [{ type: Schema.Types.ObjectId, ref: 'users' }],
   }, {
     timestamps: true
   });
