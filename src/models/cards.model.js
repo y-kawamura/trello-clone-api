@@ -11,7 +11,7 @@ module.exports = function (app) {
     description: { type: String, default: '' },
     order: { type: Number, default: 0 },
     archived: { type: Boolean, default: false },
-    listId: { type: Schema.Types.ObjectId, ref: 'lists' },
+    listId: { type: Schema.Types.ObjectId, ref: 'lists', required: true },
     members: [{ type: Schema.Types.ObjectId, ref: 'users' }],
   }, {
     timestamps: true
