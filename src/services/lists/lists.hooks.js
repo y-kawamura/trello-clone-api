@@ -1,5 +1,6 @@
 const { authenticate } = require('@feathersjs/authentication').hooks;
 
+const { BadRequest, NotAuthenticated } = require('@feathersjs/errors');
 const mongoose = require('mongoose');
 
 const getBoardIdByListId = async (listId) => {
@@ -7,11 +8,11 @@ const getBoardIdByListId = async (listId) => {
   try {
     const list = await lists.findOne({ _id: listId });
     if (list === null) {
-      return Promise.reject(new Error('list is not found'));
+      throw new BadRequest('list id must be specified');
     }
     return list.boardId;
   } catch (error) {
-    return Promise.reject(new Error('list is not found'));
+    throw new BadRequest('list id must be specified');
   }
 };
 
@@ -22,7 +23,7 @@ const isBoardOwner = async (context, boardId) => {
   if (board.ownerId.toString() === context.params.user._id.toString()) {
     return context;
   } else {
-    return Promise.reject(new Error('Un-Authorized'));
+    throw new NotAuthenticated('You are not board owner');
   }
 };
 
