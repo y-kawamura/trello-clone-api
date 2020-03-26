@@ -7,9 +7,14 @@ const setUserId = setField({
   as: 'data.ownerId'
 });
 
-const limitToUser = setField({
+const limitToOwner = setField({
   from: 'params.user._id',
   as: 'params.query.ownerId'
+});
+
+const limitToUser = setField({
+  from: 'params.user._id',
+  as: ['params.query.ownerId', 'params.query.members']
 });
 
 module.exports = {
@@ -18,9 +23,9 @@ module.exports = {
     find: [ limitToUser ],
     get: [ limitToUser ],
     create: [ setUserId ],
-    update: [ limitToUser ],
-    patch: [ limitToUser ],
-    remove: [ limitToUser ]
+    update: [ limitToOwner ],
+    patch: [ limitToOwner ],
+    remove: [ limitToOwner ]
   },
 
   after: {

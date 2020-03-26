@@ -16,41 +16,43 @@ const getBoardIdByListId = async (listId) => {
   }
 };
 
-const isBoardOwner = async (context, boardId) => {
+const isBoardUser = async (context, boardId) => {
   const boards = mongoose.model('boards');
   const board = await boards.findOne({ _id: boardId });
 
-  if (board.ownerId.toString() === context.params.user._id.toString()) {
+  const isOwner = board.ownerId.toString() === context.params.user._id.toString();
+  const isMember = board.members.includes(context.params.user._id);
+  if (isOwner ||isMember) {
     return context;
   } else {
     throw new NotAuthenticated('You are not board owner');
   }
 };
 
-const isBoardOwnerById = async (context) => {
+const isBoardUserById = async (context) => {
   const boardId = await getBoardIdByListId(context.id);
-  await isBoardOwner(context, boardId);
+  await isBoardUser(context, boardId);
 };
 
-const isBoardOwnerByData = async (context) => {
+const isBoardUserByData = async (context) => {
   const boardId = context.data.boardId;
-  await isBoardOwner(context, boardId);
+  await isBoardUser(context, boardId);
 };
 
-const isBoardOwnerByQuery = async (context) => {
+const isBoardUserByQuery = async (context) => {
   const boardId = context.params.query.boardId;
-  await isBoardOwner(context, boardId);
+  await isBoardUser(context, boardId);
 };
 
 module.exports = {
   before: {
     all: [ authenticate('jwt') ],
-    find: [ isBoardOwnerByQuery ],
-    get: [ isBoardOwnerById ],
-    create: [ isBoardOwnerByData ],
-    update: [ isBoardOwnerById ],
-    patch: [ isBoardOwnerById ],
-    remove: [ isBoardOwnerById ]
+    find: [ isBoardUserByQuery ],
+    get: [ isBoardUserById ],
+    create: [ isBoardUserByData ],
+    update: [ isBoardUserById ],
+    patch: [ isBoardUserById ],
+    remove: [ isBoardUserById ]
   },
 
   after: {

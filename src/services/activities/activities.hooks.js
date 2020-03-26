@@ -13,7 +13,7 @@ const methodNotAllow = () => {
   throw new MethodNotAllowed('This method is not allowed');
 };
 
-const isBoardOwner = async (context, boardId) => {
+const isBoardUser = async (context, boardId) => {
   if (!boardId) {
     throw new BadRequest('board id must be specified');
   }
@@ -21,29 +21,31 @@ const isBoardOwner = async (context, boardId) => {
   const boards = mongoose.model('boards');
   const board = await boards.findOne({ _id: boardId });
 
-  if (board.ownerId.toString() === context.params.user._id.toString()) {
+  const isOwner = board.ownerId.toString() === context.params.user._id.toString();
+  const isMember = board.members.includes(context.params.user._id);
+  if (isOwner ||isMember) {
     return context;
   } else {
     throw new NotAuthenticated('You are not board owner');
   }
 };
 
-const isBoardOwnerByData = async (context) => {
+const isBoardUserByData = async (context) => {
   const boardId = context.data.boardId;
-  return await isBoardOwner(context, boardId);
+  return await isBoardUser(context, boardId);
 };
 
-const isBoardOwnerByQuery = async (context) => {
+const isBoardUserByQuery = async (context) => {
   const boardId = context.params.query.boardId;
-  return await isBoardOwner(context, boardId);
+  return await isBoardUser(context, boardId);
 };
 
 module.exports = {
   before: {
     all: [ authenticate('jwt') ],
-    find: [ isBoardOwnerByQuery ],
+    find: [ isBoardUserByQuery ],
     get: [ methodNotAllow ],
-    create: [ setUserId, isBoardOwnerByData ],
+    create: [ setUserId, isBoardUserByData ],
     update: [ methodNotAllow ],
     patch: [ methodNotAllow ],
     remove: [ methodNotAllow ]
