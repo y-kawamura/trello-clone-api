@@ -9,7 +9,7 @@
   "authentication": {
     "entity": "user",
     "service": "users",
-    "secret": "LfArDlcX7Ychx1EuIOcjxSIfVaM=",
+    "secret": "AUTH_SECRET",
     "authStrategies": [
       "jwt",
       "local"
@@ -28,5 +28,5 @@
       "passwordField": "password"
     }
   },
-  "mongodb": "mongodb://localhost:27017/trello_clone_api"
+  "mongodb": "MONGODB_URI"
 }
